@@ -11,7 +11,7 @@ class TBDetectionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TB Detection System',
+      title: 'Early TB Detection',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Courier',

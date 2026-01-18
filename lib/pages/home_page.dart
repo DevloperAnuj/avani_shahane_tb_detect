@@ -11,6 +11,8 @@ import '../widgets/results_screen.dart';
 import '../components/app_header.dart';
 import '../components/step_indicator.dart';
 import '../components/processing_dialog.dart';
+import '../services/database_helper.dart';
+import 'patient_records_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -290,12 +292,94 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _savePatient() async {
+    final patient = PatientRecord(
+      patientId: _patientId,
+      patientName: _patientName,
+      patientAge: _patientAge,
+      patientGender: _patientGender,
+      coughOver2Weeks: _coughOver2Weeks,
+      hemoptysis: _hemoptysis,
+      fever: _fever,
+      nightSweats: _nightSweats,
+      chestPain: _chestPain,
+      fatigue: _fatigue,
+      anorexia: _anorexia,
+      dyspnea: _dyspnea,
+      weightLoss: _weightLoss,
+      previousTB: _previousTB,
+      tbContact: _tbContact,
+      hivStatus: _hivStatus,
+      diabetic: _diabetic,
+      smoker: _smoker,
+      xrayFileName: _selectedFileName,
+      probability: _probability,
+      fusionGain: _fusionGain,
+      isPositive: _isPositive,
+      dateTime: DateTime.now().toIso8601String(),
+    );
+
+    await DatabaseHelper.instance.insertPatient(patient);
+
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.grey[300],
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+          side: BorderSide(color: Colors.black, width: 2),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.check_circle, size: 48, color: Colors.green),
+              const SizedBox(height: 16),
+              const Text(
+                'PATIENT RECORD SAVED',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Patient ID: $_patientId',
+                style: const TextStyle(fontSize: 11),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[400],
+                  foregroundColor: Colors.black,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                    side: BorderSide(color: Colors.black, width: 2),
+                  ),
+                ),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _viewPatientRecords() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PatientRecordsPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          const AppHeader(),
+          AppHeader(onViewRecords: _viewPatientRecords),
           StepIndicator(currentStep: _currentStep),
           Expanded(
             child: _buildCurrentScreen(),
@@ -396,6 +480,7 @@ class _HomePageState extends State<HomePage> {
           isPositive: _isPositive,
           onPrintReport: _printReport,
           onNewPatient: _resetPatient,
+          onSavePatient: _savePatient,
         );
       default:
         return const SizedBox();

@@ -31,6 +31,7 @@ class ResultsScreen extends StatelessWidget {
   final bool isPositive;
   final VoidCallback onPrintReport;
   final VoidCallback onNewPatient;
+  final VoidCallback onSavePatient;
 
   const ResultsScreen({
     super.key,
@@ -59,6 +60,7 @@ class ResultsScreen extends StatelessWidget {
     required this.isPositive,
     required this.onPrintReport,
     required this.onNewPatient,
+    required this.onSavePatient,
   });
 
   @override
@@ -85,6 +87,11 @@ class ResultsScreen extends StatelessWidget {
           const SizedBox(height: 12),
           _buildDiagnosticResultSection(),
           const SizedBox(height: 20),
+          PrimaryButton(
+            label: 'SAVE PATIENT RECORD',
+            onPressed: onSavePatient,
+          ),
+          const SizedBox(height: 12),
           SecondaryButton(
             label: 'PRINT REPORT',
             onPressed: onPrintReport,
